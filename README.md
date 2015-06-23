@@ -284,7 +284,7 @@ $ osm2pgsql -h -v | less
 To import the data set in slim mode with a cache of 2500MB, forcing a Postgres
 password prompt and utlizing the style from OpenStreetMap Carto:
 ```
-$ osm2pgsql -c -s -C 2500 -G -K -W -d gis -U postgres -H <your-server-zone>.rds.amazonaws.com norway-latest.osm.pbf -S ~/src/openstreetmap-carto/openstreetmap-carto.style
+$ osm2pgsql -c -s -C 2500 -G -K -W -d gis -U postgres -H <your-server-zone>.rds.amazonaws.com estonia-latest.osm.pbf -S ~/src/openstreetmap-carto/openstreetmap-carto.style
 ```
 
 After a successful import the the table listing in psql should look something like this:
