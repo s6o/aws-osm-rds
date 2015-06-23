@@ -67,6 +67,7 @@ $ sudo yum install \
   libuv libuv-devel \
   libxml libxml-devel \
   lua lua-devel \
+  mod24_ssl \
   nodejs npm \ 
   ogdi \
   postgresql93 postgresql93-contrib postgresql93-devel postgresql93-libs postgresql93-server \
