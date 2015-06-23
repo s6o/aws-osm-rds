@@ -141,6 +141,53 @@ gis=> alter schema topology owner to postgres;
 
 ## OpenStreetMap Software Stack Installation
 
+### Mapnik
+* https://github.com/mapnik/mapnik
+
+#### Clone & Build
+```
+$ cd ~/src
+$ git clone git://github.com/mapnik/mapnik
+$ cd mapnik
+$ git checkout -b v2.2.0 v2.2.0
+$ python scons/scons.py configure INPUT_PLUGINS=all OPTIMIZATION=3 SYSTEM_FONTS=/usr/share/fonts/dejavu/
+$ make
+$ sudo make install
+```
+
+_NOTE:_ the following optional dependencies could not be satisfied with default
+AMI Linux packages.
+```
+Note: will build without these OPTIONAL dependencies:
+   - ociei (Oracle database library | configure with OCCI_LIBS & OCCI_INCLUDES | more info: https://github.com/mapnik/mapnik/wiki/OCCI)
+   - rasterlite
+```
+
+#### ldconfig
+The mapnik libraries are installed into _/usr/local/lib_, which for some reason
+is ignored by default by AMI Linux. A configuration file needs to be set up for
+ldconfig to fix this.
+```
+$ pushd .
+$ cd /etc/ld.so.conf.d/
+$ sudo echo -n "/usr/local/lib" > mapnik.conf
+$ sudo ldconfig
+$ popd
+```
+
+#### Test Installation
+```
+$ python
+Python 2.7.9 (default, Apr  1 2015, 18:18:03)
+[GCC 4.8.2 20140120 (Red Hat 4.8.2-16)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import mapnik
+>>> quit()
+```
+Between the _import mapnik_ and _quit()_ commands there should be no output,
+indicating that the _libmapnik.so.2.2.0_ was properly found from _/usr/local/lib_
+
+
 ### OpenStreetMap Carto
 These are the CartoCSS map style sheets for the Standard map layer on
 https://www.openstreetmap.org/
@@ -195,6 +242,7 @@ $ carto project-1.mml > OSMDefault.xml
 ```
 That is it for now, we will follow up on this a bit later, after having set up
 the data set via osm2pgsql and built Mapnik and mod\_tile.
+
 
 ### OpenStreetMap data into PostgreSQL converter (osm2pgsql)
 * https://github.com/openstreetmap/osm2pgsql
@@ -257,53 +305,6 @@ gis=> \dt
  topology | topology           | table | rdsadmin
 (10 rows)
 ```
-
-### Mapnik
-* https://github.com/mapnik/mapnik
-
-#### Clone & Build
-```
-$ cd ~/src
-$ git clone git://github.com/mapnik/mapnik
-$ cd mapnik
-$ git checkout -b v2.2.0 v2.2.0
-$ python scons/scons.py configure INPUT_PLUGINS=all OPTIMIZATION=3 SYSTEM_FONTS=/usr/share/fonts/dejavu/
-$ make
-$ sudo make install
-```
-
-_NOTE:_ the following optional dependencies could not be satisfied with default
-AMI Linux packages.
-```
-Note: will build without these OPTIONAL dependencies:
-   - ociei (Oracle database library | configure with OCCI_LIBS & OCCI_INCLUDES | more info: https://github.com/mapnik/mapnik/wiki/OCCI)
-   - rasterlite
-```
-
-#### ldconfig
-The mapnik libraries are installed into _/usr/local/lib_, which for some reason
-is ignored by default by AMI Linux. A configuration file needs to be set up for
-ldconfig to fix this.
-```
-$ pushd .
-$ cd /etc/ld.so.conf.d/
-$ sudo echo -n "/usr/local/lib" > mapnik.conf
-$ sudo ldconfig
-$ popd
-```
-
-#### Test Installation
-```
-$ python
-Python 2.7.9 (default, Apr  1 2015, 18:18:03)
-[GCC 4.8.2 20140120 (Red Hat 4.8.2-16)] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import mapnik
->>> quit()
-```
-Between the _import mapnik_ and _quit()_ commands there should be no output,
-indicating that the _libmapnik.so.2.2.0_ was properly found from _/usr/local/lib_
-
 
 ### mod_tile
 A program to efficiently render and serve map tiles for https://www.openstreetmap.org
