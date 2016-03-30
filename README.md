@@ -127,7 +127,7 @@ gis=> create extension postgis_topology;
 Give access and change ownership:
 
 ```
-gis=> grant connection on database gis to postgres;
+gis=> grant connect on database gis to postgres;
 gis=> alter schema public owner to postgres;
 ```
 
